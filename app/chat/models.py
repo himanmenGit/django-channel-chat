@@ -10,7 +10,7 @@ class Room(models.Model):
 
 
 class Message(models.Model):
-    room = models.ForeignKey(Room, related_name='messages')
+    room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
     handle = models.CharField(max_length=50)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True, db_index=True)

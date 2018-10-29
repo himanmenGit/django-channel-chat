@@ -1,27 +1,21 @@
-from django.db import transaction
-from django.shortcuts import render, redirect
-from django.views.generic.base import View, TemplateView
+import json
 
-from haikunator import Haikunator
+from django.shortcuts import render
+from django.utils.safestring import mark_safe
+from django.views.generic.base import View, TemplateView
 
 from .models import Room
 
 
-class About(TemplateView):
-    template_name = 'chat/about.html'
+class Index(TemplateView):
+    template_name = 'chat/index.html'
 
 
-class NewRoom(View):
-    http_method_names = ['get']
-
-    def get(self, request):
-        new_room = None
-        while not new_room:
-            with transaction.atomic():
-                label = Haikunator.haikunate()
-                if not Room.objects.filter(label=label).exists():
-                    new_room = Room.objects.create(label=label)
-        return redirect(ChatRoom, label=label)
+class RoomView(View):
+    def get(self, request, room_name):
+        return render(request, 'chat/room.html', {
+            'room_name_json': mark_safe(json.dumps(room_name))
+        })
 
 
 class ChatRoom(View):
