@@ -8,7 +8,21 @@
 어떤 대화방에 입장 하시겠습니까?<br>
 <input type="text" id="room-name-input" size="100"><br>
 <input type="button" id="room-name-submit" value="접속">
+<textarea id="chat-log" cols="100" rows="20"></textarea><br/>
 <script>
+    let chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/');
+
+    chatSocket.onmessage = function (e) {
+        let data = JSON.parse(e.data);
+        let message = data['message'];
+        document.querySelector('#chat-log').value += (message + '\n');
+    };
+
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
     document.querySelector('#room-name-input').focus();
     document.querySelector('#room-name-input').addEventListener('keyup', function (e) {
         if (event.defaultPrevented) {

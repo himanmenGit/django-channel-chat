@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_q',
 
     'chat',
 ]
@@ -130,3 +131,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+DJANGO_Q_CLUSTERS = ['image', 'chat']

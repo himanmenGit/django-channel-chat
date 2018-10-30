@@ -30,6 +30,7 @@
         console.error('Chat socket closed unexpectedly');
     };
 
+    {% if request.user.is_authenticated %}
     document.querySelector('#chat-message-input').focus();
     document.querySelector('#chat-message-input').addEventListener('keyup', function (e) {
         if (event.defaultPrevented) {
@@ -42,7 +43,6 @@
     });
 
     document.querySelector('#chat-message-submit').addEventListener('click', function (e) {
-        {% if request.user.is_authenticated %}
             let messageInputDom = document.querySelector('#chat-message-input');
             let message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
@@ -50,8 +50,8 @@
             }));
 
             messageInputDom.value = '';
-        {% endif %}
     });
+    {% endif %}
 </script>
 
 </html>
