@@ -1,4 +1,5 @@
-import asyncio
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 from django_q.brokers import get_broker
 from django_q.tasks import async_task as _async
@@ -131,54 +132,25 @@ class IndexConsumer(AsyncJsonWebsocketConsumer):
 
 class CusSend:
     def __init__(self):
-        self.loop = asyncio.get_event_loop()
+        self.channel_layer = get_channel_layer()
 
-    def get_tick(self):
-        return self.loop.run_until_complete(self.__async__get__ticks())
-
-    async def __async__get__ticks(self):
-        from channels.layers import get_channel_layer
-        channel_layer = get_channel_layer()
-        await channel_layer.group_send(
+    def send_message(self, message):
+        async_to_sync(self.channel_layer.group_send)(
             'main',
             {
                 'type': 'chat_message',
-                'message': '129381092381092830192830',
+                'message': message,
             }
         )
-        await channel_layer.group_send(
+        async_to_sync(self.channel_layer.group_send)(
             'chat_lob',
             {
                 'type': 'chat_message',
-                'message': '129381092381092830192830',
+                'message': message,
             }
         )
 
 
-def send(message):
-    from asgiref.sync import async_to_sync
-    from channels.layers import get_channel_layer
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        'main',
-        {
-            'type': 'chat_message',
-            'message': message,
-        }
-    )
-    async_to_sync(channel_layer.group_send)(
-        'chat_lob',
-        {
-            'type': 'chat_message',
-            'message': message,
-        }
-    )
-
-
-def add(content):
-    message = f'{get_name()}:{content}'
-    _async(send, message, broker=get_broker('chat'))
-
-
-def get_name():
-    return User.objects.all()[0].username
+def add(message):
+    cus = CusSend()
+    _async(cus.send_message, message, broker=get_broker('thumb_nail'))
