@@ -43,9 +43,10 @@
     });
 
     document.querySelector('#room-name-submit').addEventListener('click', function (e) {
-        console.log(e)
         let roomName = document.querySelector('#room-name-input').value;
-        window.location.pathname = '/chat/' + roomName + '/';
+        if (roomName !== '') {
+            window.location.pathname = '/chat/' + roomName + '/';
+        }
     });
 </script>
 </body>

@@ -1,4 +1,5 @@
 from asgiref.sync import async_to_sync
+from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 
 from django_q.brokers import get_broker
@@ -8,6 +9,8 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import json
 
 from django.contrib.auth import get_user_model
+
+from chat.models import Room
 
 User = get_user_model()
 
@@ -82,6 +85,13 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 'message': f'{self.user}: {message}'
             }
         )
+
+        room = await self.set_message()
+        room.messages.create(user=self.scope['user'], handle=self.room_group_name, message=message)
+
+    @database_sync_to_async
+    def set_message(self):
+        return Room.objects.get(label=self.room_name)
 
     async def chat_message(self, event):
         message = event['message']

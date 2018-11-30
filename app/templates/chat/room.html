@@ -51,11 +51,14 @@
         document.querySelector('#chat-message-submit').addEventListener('click', function (e) {
             let messageInputDom = document.querySelector('#chat-message-input');
             let message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
 
-            messageInputDom.value = '';
+            if (message !== '') {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+
+                messageInputDom.value = '';
+            }
         });
     {% endif %}
 </script>
