@@ -5,10 +5,17 @@
     <title>Chat Rooms</title>
 </head>
 <body>
-어떤 대화방에 입장 하시겠습니까?<br>
-<input type="text" id="room-name-input" size="100"><br>
-<input type="button" id="room-name-submit" value="접속">
-<textarea id="chat-log" cols="100" rows="20"></textarea><br/>
+<div>
+    어떤 대화방에 입장 하시겠습니까?<br>
+    <input type="text" id="room-name-input" size="100"><br>
+    <input type="button" id="room-name-submit" value="접속"><br>
+</div>
+<div>
+    <br>
+    <br>
+    <br>
+    <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
+</div>
 <script>
     let chatSocket = new WebSocket(
         'ws://' + window.location.host + '/ws/');
